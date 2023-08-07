@@ -34,9 +34,22 @@ const usersCollection = client.db("TechTrove").collection("AllUsers");
 // All Collection End-----------------------------------------------------------------------------------------------------
 
 //-------------------------------------------------- Code logic operation Start------------------------------------------------------------------------------
-//  first user create and get all users data from client site and store this data
+// manually first user create and get all users data from client site and store this data
 
-app.post('/users', async (req, res) => {
+app.post('/manualUsers', async (req, res) => {
+  const body = req.body;
+  console.log(body);
+  try {
+    const result = await usersCollection.insertOne(body);
+    res.send(result);
+  } catch (error) {
+    console.error('Error inserting user data:', error);
+    res.status(500).json({ error: 'An error occurred while inserting user data.' });
+  }
+});
+
+// Google first user create and get all users data from client site and store this data
+app.post('/GoogleUsers', async (req, res) => {
   const body = req.body;
   console.log(body);
   try {
