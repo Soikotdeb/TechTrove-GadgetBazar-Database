@@ -4,13 +4,12 @@ const { MongoClient, ServerApiVersion } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
-
+const bodyParser = require('body-parser');
 
 // middleware
 app.use(cors());
 app.use(express.json());
 // ---------------------------------------------------------------------------------------------------------------------------------------
-
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.e1mdmag.mongodb.net/?retryWrites=true&w=majority`;
 
@@ -34,12 +33,47 @@ const usersCollection = client.db("TechTrove").collection("AllUsers");
 
 // All Collection End-----------------------------------------------------------------------------------------------------
 
+//-------------------------------------------------- Code logic operation Start------------------------------------------------------------------------------
+//  first user create and get all users data from client site and store this data
+
+app.post('/users', async (req, res) => {
+  const body = req.body;
+  console.log(body);
+  try {
+    const result = await usersCollection.insertOne(body);
+    res.send(result);
+  } catch (error) {
+    console.error('Error inserting user data:', error);
+    res.status(500).json({ error: 'An error occurred while inserting user data.' });
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
-    await client.close();
+    // await client.close();
   }
 }
 run().catch(console.dir);
