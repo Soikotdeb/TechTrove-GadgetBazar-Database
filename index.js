@@ -48,7 +48,7 @@ app.post('/manualUsers', async (req, res) => {
   }
 });
 
-// Google first user create and get all users data from client site and store this data
+// Google first user create from registration page & Login Page and get all users data from client site and store this data
 app.post('/GoogleUsers', async (req, res) => {
   const body = req.body;
   console.log(body);
