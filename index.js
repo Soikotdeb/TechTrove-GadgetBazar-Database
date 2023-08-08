@@ -62,8 +62,35 @@ app.post('/GoogleUsers', async (req, res) => {
 });
 
 
+// Check user role = admin ? instructor ? user to dynamic the dashboard login
 
+  // check user role (admin)
+  app.get("/users/admin/:email", async (req, res) => {
+    const email = req.params.email;
+    const query = { email: email };
+    const user = await usersCollection.findOne(query);
+    const result = { admin: user?.role === "admin" };
+    res.send(result);
+  });
 
+  // Check user role (instructor)
+  app.get("/users/instructor/:email", async (req, res) => {
+    const email = req.params.email;
+
+    const query = { email: email };
+    const user = await usersCollection.findOne(query);
+    const result = { instructor: user?.role === "instructor" };
+    res.send(result);
+  });
+
+  // Check user role (normalUser)
+  app.get("/users/user/:email", async (req, res) => {
+    const email = req.params.email;
+    const query = { email: email };
+    const users = await usersCollection.findOne(query);
+    const result = { user: users?.role === "user" };
+    res.send(result);
+  });
 
 
 
