@@ -93,7 +93,13 @@ app.post('/GoogleUsers', async (req, res) => {
   });
 
 
+    // manage normalUsers  role user  to instructor or admin ------------------------------------------------
 
+  // All Users data Load to the ManageClasses Route in admin dashboard
+  app.get("/users", async (req, res) => {
+    const result = await usersCollection.find().toArray();
+    res.send(result);
+  });
 
 
 
