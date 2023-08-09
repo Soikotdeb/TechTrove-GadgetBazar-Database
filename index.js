@@ -29,6 +29,7 @@ async function run() {
 
 // All Collection Start-----------------------------------------------------------------------------------------------------
 const usersCollection = client.db("TechTrove").collection("AllUsers");
+const addProductsCollection = client.db("TechTrove").collection("AddProducts");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
@@ -102,9 +103,32 @@ app.post('/GoogleUsers', async (req, res) => {
   });
 
 
+// Perform  AddProducts to Instructor dashboard recive and store the data in database-----------------
+  app.post('/AddProducts', async (req, res) => {
+    const body = req.body;
+    console.log(body);
+    try {
+      const result = await addProductsCollection.insertOne(body);
+      res.send(result);
+    } catch (error) {
+      console.error('Error inserting user data:', error);
+      res.status(500).json({ error: 'An error occurred while inserting user data.' });
+    }
+  });
 
 
-
+  // instructor My Added Products data get
+  app.get("/users/instructor/myAddedProducts/:email", async (req, res) => {
+    try {
+      const email = req.params.email;
+      const query = { instructorEmail: email }; // Update the query to match instructorEmail field
+      const data = await addProductsCollection.find(query).toArray(); // Find all matching documents and convert to an array
+      res.send(data);
+    } catch (error) {
+      console.log(error);
+      res.status(500).send("Internal Server Error");
+    }
+  });
 
 
 
