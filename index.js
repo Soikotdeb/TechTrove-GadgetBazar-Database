@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const jwt =require('jsonwebtoken')
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
 const port = process.env.PORT || 5000;
@@ -33,6 +34,28 @@ const addProductsCollection = client.db("TechTrove").collection("AddProducts");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
+
+
+// JWT Token 
+app.post("/jwt", (req, res) => {
+  const user = req.body;
+  console.log(user);
+  const token = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, {
+    expiresIn: "10h",
+  });
+  res.send({ token });
+});
+
+
+
+
+
+
+
+
+
+
+
 
 //-------------------------------------------------- Code logic operation Start------------------------------------------------------------------------------
 // manually first user create and get all users data from client site and store this data
@@ -131,7 +154,15 @@ app.post('/GoogleUsers', async (req, res) => {
   });
 
 
-
+// instructor My Added Products data delete
+app.delete('/MyAddedProduct/:id', async (req, res) => {
+  const classId = req.params.id;
+  const query = { _id: new ObjectId(classId) };
+  const deleteResult = await addProductsCollection.deleteOne(query);
+  const deletedCount = deleteResult.deletedCount;
+  console.log('Deleted count:', deletedCount);
+  res.send({ deletedCount });
+});
 
 
 
