@@ -31,6 +31,7 @@ async function run() {
 // All Collection Start-----------------------------------------------------------------------------------------------------
 const usersCollection = client.db("TechTrove").collection("AllUsers");
 const addProductsCollection = client.db("TechTrove").collection("AddProducts");
+const AskedQuestionsCollection = client.db("TechTrove").collection("AskedQuestions");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
@@ -72,7 +73,7 @@ app.post('/manualUsers', async (req, res) => {
   }
 });
 
-// Google first user create from registration page & Login Page and get all users data from client site and store this data
+// Google first user create from registration page & Login Page and get all users data from client site and store this data--------------
 app.post('/GoogleUsers', async (req, res) => {
   const body = req.body;
   console.log(body);
@@ -88,7 +89,7 @@ app.post('/GoogleUsers', async (req, res) => {
 
 // Check user role = admin ? instructor ? user to dynamic the dashboard login
 
-  // check user role (admin)
+  // check user role (admin)-------------------------------------------------------------------------------
   app.get("/users/admin/:email", async (req, res) => {
     const email = req.params.email;
     const query = { email: email };
@@ -97,7 +98,7 @@ app.post('/GoogleUsers', async (req, res) => {
     res.send(result);
   });
 
-  // Check user role (instructor)
+  // Check user role (instructor)-------------------------------------------------------------------------------
   app.get("/users/instructor/:email", async (req, res) => {
     const email = req.params.email;
 
@@ -107,7 +108,7 @@ app.post('/GoogleUsers', async (req, res) => {
     res.send(result);
   });
 
-  // Check user role (normalUser)
+  // Check user role (normalUser)-------------------------------------------------------------------------------
   app.get("/users/user/:email", async (req, res) => {
     const email = req.params.email;
     const query = { email: email };
@@ -117,16 +118,16 @@ app.post('/GoogleUsers', async (req, res) => {
   });
 
 
-    // manage normalUsers  role user  to instructor or admin ------------------------------------------------
+    // manage normalUsers  role user  to instructor or admin -------------------------------------------------------------
 
-  // All Users data Load to the ManageClasses Route in admin dashboard
+  // All Users data Load to the ManageUsers Route in admin dashboard
   app.get("/users", async (req, res) => {
     const result = await usersCollection.find().toArray();
     res.send(result);
   });
 
 
-// Perform  AddProducts to Instructor dashboard recive and store the data in database-----------------
+// Perform  AddProducts to Instructor dashboard recive and store the data in database---------------------------------------------
   app.post('/AddProducts', async (req, res) => {
     const body = req.body;
     console.log(body);
@@ -140,7 +141,7 @@ app.post('/GoogleUsers', async (req, res) => {
   });
 
 
-  // instructor My Added Products data get
+  // instructor My Added Products data get------------------------------------------------------------------------------
   app.get("/users/instructor/myAddedProducts/:email", async (req, res) => {
     try {
       const email = req.params.email;
@@ -152,9 +153,19 @@ app.post('/GoogleUsers', async (req, res) => {
       res.status(500).send("Internal Server Error");
     }
   });
+// Search instructor added all Products to the MYAdded Components page -------------------------------------------------------------
+  app.get('/searchByProductName/:text', async (req, res) => {
+    const searchText = req.params.text;
+    const result = await addProductsCollection.find({
+      name: { $regex: searchText, $options: "i" }
+    }).toArray();
+    res.send(result);
+  });
 
 
-// instructor My Added Products data delete
+
+
+// instructor My Added Products data delete--------------------------------------------------
 app.delete('/MyAddedProduct/:id', async (req, res) => {
   const classId = req.params.id;
   const query = { _id: new ObjectId(classId) };
@@ -164,8 +175,72 @@ app.delete('/MyAddedProduct/:id', async (req, res) => {
   res.send({ deletedCount });
 });
 
+// custom hook use------------------------------------------------------------------------
+app.get("/useQuery", async (req, res) => {
+  const email = req.query.email;
+  console.log(email);
+  if (!email) {
+    res.send([]);
+  }
+  const query = { email: email };
+  const result = await selectClassesCollection.find(query).toArray();
+  res.send(result);
+});
+    // check user role admin and update user role to admin manage user route------------------------------------------------------
+    app.patch("/users/admin/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateData = {
+        $set: {
+          role: "admin",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateData);
+      res.send(result);
+    });
+    
+    // Check user role instructor and update user role to admin manage user route------------------------------------------------------
+    app.patch("/users/instructor/:id", async (req, res) => {
+      const id = req.params.id;
+      const filter = { _id: new ObjectId(id) };
+      const updateData = {
+        $set: {
+          role: "instructor",
+        },
+      };
+      const result = await usersCollection.updateOne(filter, updateData);
+      res.send(result);
+    });
 
 
+// user asked questions get questions to the client side AskQuestions components and store to the database---------------------------------
+    app.post('/FrequentlyAskedQuestions', async (req, res) => {
+      const body = req.body;
+      console.log(body);
+      try {
+        const result = await AskedQuestionsCollection.insertOne(body);
+        res.send(result);
+      } catch (error) {
+        console.error('Error inserting user data:', error);
+        res.status(500).json({ error: 'An error occurred while inserting user data.' });
+      }
+    });
+
+    // All Users questions Load to the UserQuestion Route in admin dashboard
+  app.get("/UsersQuestions", async (req, res) => {
+    const result = await AskedQuestionsCollection.find().toArray();
+    res.send(result);
+  });
+
+  //  Users questions delete to the UserQuestion Route in admin dashboard
+  app.delete('/UsersQuestions/:id', async (req, res) => {
+    const classId = req.params.id;
+    const query = { _id: new ObjectId(classId) };
+    const deleteResult = await AskedQuestionsCollection.deleteOne(query);
+    const deletedCount = deleteResult.deletedCount;
+    console.log('Deleted count:', deletedCount);
+    res.send({ deletedCount });
+  });
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
