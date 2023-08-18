@@ -242,6 +242,20 @@ app.get("/useQuery", async (req, res) => {
     res.send({ deletedCount });
   });
 
+  //  Users questions replay to Admin the UserQuestion Route in admin dashboard
+  app.patch("/AdminReplayToUser/:id", async (req, res) => {
+    const id = req.params.id;
+    const filter = { _id: new ObjectId(id) };
+    const QuestionReplay = req.body.replay; // Get the AdminReplay from the request body
+    const updateData = {
+      $set: {
+        AdminReplay: QuestionReplay, // Set the AdminReplay in the update data
+      },
+    };
+    const result = await AskedQuestionsCollection.updateOne(filter, updateData);
+    res.send(result);
+  });
+
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
     // Send a ping to confirm a successful connection
