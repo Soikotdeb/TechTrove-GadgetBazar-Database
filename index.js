@@ -226,13 +226,13 @@ app.get("/useQuery", async (req, res) => {
       }
     });
 
-    // All Users questions Load to the UserQuestion Route in admin dashboard
+    // All Users questions Load to the UserQuestion Route in admin dashboard---------------------------------------------------------------
   app.get("/UsersQuestions", async (req, res) => {
     const result = await AskedQuestionsCollection.find().toArray();
     res.send(result);
   });
 
-  //  Users questions delete to the UserQuestion Route in admin dashboard
+  //  Users questions delete to the UserQuestion Route in admin dashboard-------------------------------------------------------------------
   app.delete('/UsersQuestions/:id', async (req, res) => {
     const classId = req.params.id;
     const query = { _id: new ObjectId(classId) };
@@ -242,7 +242,7 @@ app.get("/useQuery", async (req, res) => {
     res.send({ deletedCount });
   });
 
-  //  Users questions replay to Admin the UserQuestion Route in admin dashboard
+  //  Users questions replay to Admin the UserQuestion Route in admin dashboard------------------------------------------------------------
   app.patch("/AdminReplayToUser/:id", async (req, res) => {
     const id = req.params.id;
     const filter = { _id: new ObjectId(id) };
