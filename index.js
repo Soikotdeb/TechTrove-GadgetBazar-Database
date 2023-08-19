@@ -32,6 +32,7 @@ async function run() {
 const usersCollection = client.db("TechTrove").collection("AllUsers");
 const addProductsCollection = client.db("TechTrove").collection("AddProducts");
 const AskedQuestionsCollection = client.db("TechTrove").collection("AskedQuestions");
+const UserFeedbackCollection = client.db("TechTrove").collection("UserFeedback");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
@@ -253,8 +254,38 @@ app.get("/useQuery", async (req, res) => {
       },
     };
     const result = await AskedQuestionsCollection.updateOne(filter, updateData);
-    res.send(result);
+    res.send(result); 
   });
+
+  // user Feedback get  to the client side Feedback components and store to the database---------------------------------
+  app.post('/UserFeedback', async (req, res) => {
+    const body = req.body;
+    console.log(body);
+    try {
+      const result = await UserFeedbackCollection.insertOne(body);
+      res.send(result);
+    } catch (error) {
+      console.error('Error inserting user data:', error);
+      res.status(500).json({ error: 'An error occurred while inserting user data.' });
+    }
+  });
+      // All Users Feedback Load to the UserFeedback Route in admin dashboard---------------------------------------------------------------
+      app.get("/UsersFeedback", async (req, res) => {
+        const result = await UserFeedbackCollection.find().toArray();
+        res.send(result);
+      });
+
+       // All latest new offer data Load to the homepage only category=Latest Offers -----------------------------------------------------------------------------------
+       app.get("/LatestOffers", async (req, res) => {
+        try {
+          const latestOffers = await addProductsCollection.find({ category: "Latest Offers" }).toArray();
+          res.send(latestOffers);
+        } catch (error) {
+          console.error("Error retrieving Latest Offers:", error);
+          res.status(500).send("Internal Server Error");
+        }
+      });
+      
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
