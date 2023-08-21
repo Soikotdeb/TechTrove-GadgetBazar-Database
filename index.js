@@ -296,6 +296,19 @@ app.get("/useQuery", async (req, res) => {
         res.send({ deletedCount });
       });
       
+// Brows Category data dynamic loaded based on click specific button ----------------------------------------------------------------------------------------------------
+      app.get("/categoryProducts/:id", async (req, res) => {
+        const categoryId = req.params.id;
+    
+        try {
+            const result = await addProductsCollection.find({ category: categoryId }).toArray();
+            res.send(result);
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            res.status(500).send('Internal Server Error');
+        }
+    });
+    
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
