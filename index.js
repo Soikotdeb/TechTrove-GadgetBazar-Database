@@ -286,6 +286,16 @@ app.get("/useQuery", async (req, res) => {
         }
       });
       
+      // LatestOffer Route to handle delete requests only admin and instructor can delete it----------------------------------------------
+      app.delete('/LatestOffer/:id', async (req, res) => {
+        const classId = req.params.id;
+        const query = { _id: new ObjectId(classId) };
+        const deleteResult = await addProductsCollection.deleteOne(query);
+        const deletedCount = deleteResult.deletedCount;
+        console.log('Deleted count:', deletedCount);
+        res.send({ deletedCount });
+      });
+      
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
