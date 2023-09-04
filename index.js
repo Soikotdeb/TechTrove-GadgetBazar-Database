@@ -163,6 +163,14 @@ app.post('/GoogleUsers', async (req, res) => {
     res.send(result);
   });
 
+  app.get('/searchByHomePage/:text', async (req, res) => {
+    const searchText = req.params.text;
+    const result = await addProductsCollection.find({
+      productName: { $regex: searchText, $options: "i" }
+    }).toArray();
+    res.send(result);
+});
+
 
 
 
