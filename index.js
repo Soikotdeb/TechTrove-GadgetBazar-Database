@@ -163,6 +163,8 @@ app.post('/GoogleUsers', async (req, res) => {
     res.send(result);
   });
 
+
+  // Search all Products to the HomePage  -------------------------------------------------------------
   app.get('/searchByHomePage/:text', async (req, res) => {
     const searchText = req.params.text;
     const result = await addProductsCollection.find({
@@ -293,6 +295,29 @@ app.get("/useQuery", async (req, res) => {
           res.status(500).send("Internal Server Error");
         }
       });
+
+       // All Premium Gadget  offer data Load to the homepage only category=Premium Gadget  -----------------------------------------------------------------------------------
+       app.get("/PremiumGadget", async (req, res) => {
+        try {
+          const PremiumGadget = await addProductsCollection.find({ category: "Premium Gadget" }).toArray();
+          res.send(PremiumGadget);
+        } catch (error) {
+          console.error("Error retrieving Premium Gadget:", error);
+          res.status(500).send("Internal Server Error");
+        }
+      });
+
+   // All MacBook  offer data Load to the homepage only category=MacBook  -----------------------------------------------------------------------------------
+      app.get("/MacBook", async (req, res) => {
+        try {
+          const MacBook = await addProductsCollection.find({ category: "MacBook" }).toArray();
+          res.send(MacBook);
+        } catch (error) {
+          console.error("Error retrieving Macbook data:", error);
+          res.status(500).send("Internal Server Error");
+        }
+      });
+      
       
       // LatestOffer Route to handle delete requests only admin and instructor can delete it----------------------------------------------
       app.delete('/LatestOffer/:id', async (req, res) => {
@@ -317,6 +342,27 @@ app.get("/useQuery", async (req, res) => {
         }
     });
     
+ // All FeaturedOffer data Load to the homepage only category=Featured Products -----------------------------------------------------------------------------------
+ app.get("/FeaturedProducts", async (req, res) => {
+  try {
+    const FeaturedProducts = await addProductsCollection.find({ category: "Featured Products" }).toArray();
+    res.send(FeaturedProducts);
+  } catch (error) {
+    console.error("Error retrieving Latest Offers:", error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+
+app.get('/searchByFeaturedProducts/:text', async (req, res) => {
+  const searchText = req.params.text;
+  const result = await addProductsCollection.find({
+    productName: { $regex: searchText, $options: "i" }
+  }).toArray();
+  res.send(result);
+});
+
+
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
