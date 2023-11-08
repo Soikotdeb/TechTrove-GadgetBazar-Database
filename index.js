@@ -33,6 +33,7 @@ const usersCollection = client.db("TechTrove").collection("AllUsers");
 const addProductsCollection = client.db("TechTrove").collection("AddProducts");
 const AskedQuestionsCollection = client.db("TechTrove").collection("AskedQuestions");
 const UserFeedbackCollection = client.db("TechTrove").collection("UserFeedback");
+const cartCollection = client.db("TechTrove").collection("ProductCart");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
@@ -363,6 +364,19 @@ app.get('/searchByFeaturedProducts/:text', async (req, res) => {
 });
 
 
+ // Endpoint to add an item to the cart--------------------------------------------------------------------------------------------------------
+ app.post('/carts', (req, res) => {
+  const cartItem = req.body;
+  // Insert the item into the cart collection
+  cartCollection.insertOne(cartItem, (err, result) => {
+    if (err) {
+      console.error('Error adding item to the cart:', err);
+      res.status(500).json({ error: 'Failed to add item to the cart' });
+    } else {
+      res.status(201).json({ success: 'Item added to the cart', insertedId: result.insertedId });
+    }
+  });
+});
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
