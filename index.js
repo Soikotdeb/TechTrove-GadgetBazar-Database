@@ -377,7 +377,23 @@ app.get('/searchByFeaturedProducts/:text', async (req, res) => {
     }
   });
 });
+// Endpoint to get an item to the cart --------------------------------------------------------------------------------------------------------
+app.get("/carts", async (req, res) => {
+  const email = req.query.email;
 
+  if (!email) {
+    return res.status(400).json({ error: true, message: "Email is required." });
+  }
+
+
+  try {
+    const query = { email: email };
+    const result = await cartCollection.find(query).toArray();
+    return res.json(result);
+  } catch (error) {
+    return res.status(500).json({ error: true, message: "Internal server error." });
+  }
+});
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
     // Send a ping to confirm a successful connection
