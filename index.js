@@ -395,7 +395,7 @@ app.get("/carts", async (req, res) => {
   }
 });
 
-// Define your cart route for deleting items
+// Define your cart route for deleting items---------------------------------------------------------------
 app.delete('/ProductCart/:id', async (req, res) => {
   const classId = req.params.id;
   const query = { _id: new ObjectId(classId) };
@@ -404,6 +404,26 @@ app.delete('/ProductCart/:id', async (req, res) => {
   console.log('Deleted count:', deletedCount);
   res.send({ deletedCount });
 });
+
+// macBook collection delete action-------------------------------------------------------------------------
+app.delete('/macBook/:id', async (req, res) => {
+  const classId = req.params.id;
+  const query = { _id: new ObjectId(classId) };
+  const deleteResult = await addProductsCollection.deleteOne(query);
+  const deletedCount = deleteResult.deletedCount;
+  console.log('Deleted count:', deletedCount);
+  res.send({ deletedCount });
+});
+// PremiumGadget collection delete action-------------------------------------------------------------------------
+app.delete('/premiumGadget/:id', async (req, res) => {
+  const classId = req.params.id;
+  const query = { _id: new ObjectId(classId) };
+  const deleteResult = await addProductsCollection.deleteOne(query);
+  const deletedCount = deleteResult.deletedCount;
+  console.log('Deleted count:', deletedCount);
+  res.send({ deletedCount });
+});
+
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
