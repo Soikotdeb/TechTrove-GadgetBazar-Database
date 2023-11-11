@@ -174,7 +174,11 @@ app.post('/GoogleUsers', async (req, res) => {
     res.send(result);
 });
 
-
+// all techTrove product data load -------------------------------------------
+app.get("/TechTrove", async (req, res) => {
+  const result = await addProductsCollection.find().toArray();
+  res.send(result);
+});
 
 
 // instructor My Added Products data delete--------------------------------------------------
@@ -406,7 +410,7 @@ app.delete('/ProductCart/:id', async (req, res) => {
 });
 
 // macBook collection delete action-------------------------------------------------------------------------
-app.delete('/macBook/:id', async (req, res) => {
+app.delete('/delete/:id', async (req, res) => {
   const classId = req.params.id;
   const query = { _id: new ObjectId(classId) };
   const deleteResult = await addProductsCollection.deleteOne(query);
@@ -414,14 +418,22 @@ app.delete('/macBook/:id', async (req, res) => {
   console.log('Deleted count:', deletedCount);
   res.send({ deletedCount });
 });
-// PremiumGadget collection delete action-------------------------------------------------------------------------
-app.delete('/premiumGadget/:id', async (req, res) => {
-  const classId = req.params.id;
-  const query = { _id: new ObjectId(classId) };
-  const deleteResult = await addProductsCollection.deleteOne(query);
-  const deletedCount = deleteResult.deletedCount;
-  console.log('Deleted count:', deletedCount);
-  res.send({ deletedCount });
+
+// New Arrival shop by section data get---------------------------------------------------------------
+app.get("/NewArrival", async (req, res) => {
+  try {
+    // Assuming your documents have a field named "createdAt" for timestamp
+    const result = await addProductsCollection
+      .find()
+      .sort({ createdAt: -1 }) // Sort in descending order based on the timestamp
+      .limit(20) // Limit the result to the last 20 items
+      .toArray();
+
+    res.send(result);
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 
