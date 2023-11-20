@@ -426,7 +426,7 @@ app.get("/NewArrival", async (req, res) => {
     const result = await addProductsCollection
       .find()
       .sort({ createdAt: -1 }) // Sort in descending order based on the timestamp
-      .limit(20) // Limit the result to the last 20 items
+      .limit(24) // Limit the result to the last 24 items
       .toArray();
 
     res.send(result);
