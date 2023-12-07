@@ -4,8 +4,10 @@ const jwt =require('jsonwebtoken')
 const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 require('dotenv').config()
 const app = express();
+const stripe = require("stripe")(process.env.PAYMENT_SECRET_KEY);
 const port = process.env.PORT || 5000;
 const bodyParser = require('body-parser');
+
 
 // middleware
 app.use(cors());
@@ -34,6 +36,7 @@ const addProductsCollection = client.db("TechTrove").collection("AddProducts");
 const AskedQuestionsCollection = client.db("TechTrove").collection("AskedQuestions");
 const UserFeedbackCollection = client.db("TechTrove").collection("UserFeedback");
 const cartCollection = client.db("TechTrove").collection("ProductCart");
+const PaymentCollection = client.db("TechTrove").collection("Payment");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
@@ -436,6 +439,9 @@ app.get("/NewArrival", async (req, res) => {
   }
 });
 
+
+
+// Existing code for creating payment intent-------------------------------------------------
 
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
