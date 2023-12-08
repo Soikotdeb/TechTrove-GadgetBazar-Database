@@ -442,7 +442,21 @@ app.get("/NewArrival", async (req, res) => {
 
 
 // Existing code for creating payment intent-------------------------------------------------
+app.post('/create-payment-intent', async (req, res) => {
+  const { amount } = req.body;
+  console.log(amount);
+  try {
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount,
+      currency: 'BDT', // Replace with your desired currency
+      // Other options like metadata, description, etc. can be added here
+    });
 
+    res.status(200).json({ clientSecret: paymentIntent.client_secret });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
     // Send a ping to confirm a successful connection
