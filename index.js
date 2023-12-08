@@ -36,7 +36,7 @@ const addProductsCollection = client.db("TechTrove").collection("AddProducts");
 const AskedQuestionsCollection = client.db("TechTrove").collection("AskedQuestions");
 const UserFeedbackCollection = client.db("TechTrove").collection("UserFeedback");
 const cartCollection = client.db("TechTrove").collection("ProductCart");
-const PaymentCollection = client.db("TechTrove").collection("Payment");
+const PaymentCollection = client.db("TechTrove").collection("PaymentDetails");
 
 
 // All Collection End-----------------------------------------------------------------------------------------------------
@@ -441,7 +441,7 @@ app.get("/NewArrival", async (req, res) => {
 
 
 
-// Existing code for creating payment intent-------------------------------------------------
+// Existing code for creating payment intent------------------------------------------------->
 app.post('/create-payment-intent', async (req, res) => {
   const { amount } = req.body;
   console.log(amount);
@@ -458,6 +458,32 @@ app.post('/create-payment-intent', async (req, res) => {
   }
 });
 
+// Handle POST request to save payment details------------------------------------------------>
+app.post('/save-payment-details', async (req, res) => {
+  const paymentData = req.body;
+  try {
+    // Insert payment details into the PaymentDetails collection
+    await PaymentCollection.insertOne(paymentData);
+    res.status(200).send('Payment details saved successfully');
+  } catch (error) {
+    res.status(500).send('Error saving payment details');
+  }
+});
+
+
+app.delete('/delete-user-data', async (req, res) => {
+  try {
+    const { userEmail } = req.body;
+    
+    // Delete data associated with the provided userEmail...
+    await cartCollection.deleteMany({ email: userEmail });
+    
+    res.status(200).send('User data deleted successfully');
+  } catch (error) {
+    console.error('Error occurred while deleting user data:', error);
+    res.status(500).send('Failed to delete user data');
+  }
+});
 //-------------------------------------------------- Code logic operation End------------------------------------------------------------------------------
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
