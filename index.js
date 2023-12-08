@@ -471,11 +471,11 @@ app.post('/save-payment-details', async (req, res) => {
 });
 
 
+// Delete data associated with the provided userEmail.........................>
 app.delete('/delete-user-data', async (req, res) => {
   try {
     const { userEmail } = req.body;
     
-    // Delete data associated with the provided userEmail...
     await cartCollection.deleteMany({ email: userEmail });
     
     res.status(200).send('User data deleted successfully');
